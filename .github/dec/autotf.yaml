@@ -15,14 +15,14 @@ jobs:
 
     steps:
       # Step 1: Checkout the repository
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       # Step 2: Set up Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.6 # Replace with your Terraform version if different
+          terraform_version: 1.5.6
 
       # Step 3: Initialize Terraform
       - name: Terraform Init
@@ -34,10 +34,11 @@ jobs:
 
       # Step 5: Create Terraform Plan
       - name: Terraform Plan
+        id: terraform-plan
         run: terraform plan -out=tfplan
 
       # Step 6: Upload the plan file as an artifact (optional)
-      - name: Upload Plan File
+      - name: Upload Terraform Plan
         uses: actions/upload-artifact@v3
         with:
           name: terraform-plan
@@ -46,25 +47,25 @@ jobs:
   terraform-apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    needs: terraform-init-validate-plan  # Runs after job 1 is successful
+    needs: terraform-init-validate-plan  # Runs after the plan job is successful
 
     steps:
       # Step 1: Checkout the repository
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       # Step 2: Set up Terraform CLI
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.6 # Replace with your Terraform version if different
+          terraform_version: 1.5.6
 
       # Step 3: Download the plan file from the previous job
-      - name: Download Plan File
+      - name: Download Terraform Plan
         uses: actions/download-artifact@v3
         with:
           name: terraform-plan
-          path: .  # Download to the current working directory
+          path: .
 
       # Step 4: Apply Terraform Plan
       - name: Terraform Apply
